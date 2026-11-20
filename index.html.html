@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Representación en la recta real numérica · Tales y Pitágoras</title>
+<style>
+  /* =====================================================================
+     PALETA CORPORATIVA
+       #00a083 verde esmeralda · #afcb37 verde lima
+       #00a4b7 azul turquesa   · #3b3b3d gris oscuro
+     ===================================================================== */
+  :root {
+    --ies-dark: #3b3b3d;
+    --ies-primary: #00a4b7;
+    --ies-primary-dark: #007F8E;
+    --ies-primary-soft: #E2F4F7;
+    --ies-secondary: #00a083;
+    --ies-secondary-dark: #007E67;
+    --ies-secondary-soft: #E0F3EF;
+    --ies-accent: #afcb37;
+    --ies-accent-dark: #7E9620;
+    --ies-accent-soft: #F2F7E0;
+    --ies-bg: #F5F7F7;
+    --ies-surface: #FFFFFF;
+    --ies-border: #D9E0E1;
+    --ies-text: #3b3b3d;
+    --ies-muted: #6B6B70;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--ies-bg);
+    color: var(--ies-text);
+    font-size: 13px;
+    line-height: 1.38;
+    overflow: hidden;
+  }
+  /* ==================== CABECERA ==================== */
+  header.topbar {
+    height: 44px; background: var(--ies-dark); color: #FFFFFF;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 10px; border-bottom: 3px solid var(--ies-accent); gap: 8px; user-select: none;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; }
+  .brand-logo {
+    width: 28px; height: 28px; border-radius: 6px; background: #FFFFFF;
+    display: flex; align-items: center; justify-content: center; padding: 3px;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .brand-title { font-weight: 700; font-size: 12.5px; letter-spacing: 0.2px; }
+  .brand-sub { font-size: 10px; opacity: 0.85; }
+  nav.nav-tabs { display: flex; align-items: center; gap: 3px; overflow-x: auto; scrollbar-width: none; }
+  nav.nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: rgba(255,255,255,0.12); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 6px; padding: 4px 8px; font-size: 11.5px; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: background 0.15s; height: 30px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.24); }
+  .nav-btn.active { background: var(--ies-primary); color: #FFFFFF; border-color: #FFFFFF; }
+  .nav-btn.workshop-btn { border-color: rgba(255,255,255,0.3); background: rgba(0,160,131,0.55); }
+  .nav-btn.workshop-btn.active { background: var(--ies-secondary); border-color: #FFFFFF; }
+  main.app-body { height: calc(100vh - 44px); width: 100%; position: relative; }
+  /* ==================== PORTADA ==================== */
+  .home-view {
+    height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 8px;
+    padding: 8px 12px; max-width: 1366px; margin: 0 auto;
+  }
+  .hero-banner {
+    background: var(--ies-surface); border: 1px solid var(--ies-border);
+    border-top: 3px solid var(--ies-primary); border-radius: 10px; padding: 9px 14px;
+    display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; align-items: center;
+  }
+  .hero-info h1 { font-size: 18px; color: var(--ies-dark); margin-bottom: 4px; line-height: 1.2; }
+  .hero-badge {
+    display: inline-block; background: var(--ies-primary-soft); color: var(--ies-primary-dark);
+    font-weight: 700; font-size: 10px; padding: 2px 8px; border-radius: 99px;
+    margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .hero-info p { color: var(--ies-muted); font-size: 12px; }
+  .hero-canvas-box {
+    background: #F9FBFB; border: 1px solid var(--ies-border); border-radius: 8px;
+    height: 128px; position: relative; overflow: hidden;
+  }
+  #heroCanvas { width: 100%; height: 100%; display: block; }
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr;
+    gap: 7px; align-content: start; justify-content: center;
+  }
+  .lesson-card {
+    background: var(--ies-surface); border: 1px solid var(--ies-border); border-radius: 8px;
+    padding: 6px 8px; cursor: pointer; display: flex; flex-direction: column;
+    justify-content: space-between; gap: 4px;
+    transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+  }
+  .lesson-card:hover {
+    border-color: var(--ies-primary); transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,164,183,0.14);
+  }
+  .lesson-card.workshop-card {
+    border-left: 3px solid var(--ies-secondary);
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--ies-secondary-soft) 100%);
+  }
+  .card-tag {
+    font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+    color: var(--ies-accent-dark); margin-bottom: 1px;
+  }
+  .workshop-card .card-tag { color: var(--ies-secondary-dark); }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--ies-dark); margin-bottom: 1px; }
+  .card-desc { font-size: 10px; color: var(--ies-muted); line-height: 1.25; }
+  /* Fórmula genérica centrada en la tarjeta */
+  .card-math {
+    background: var(--ies-bg); padding: 3px 6px; border-radius: 5px;
+    border: 1px solid var(--ies-border); color: var(--ies-dark);
+    align-self: center; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; min-height: 28px;
+  }
+  .card-math math { font-size: 14px; margin: 0 auto; }
+  .workshop-card .card-math { background: #FFFFFF; }
+  .compare-strip {
+    background: var(--ies-surface); border: 1px solid var(--ies-border); border-radius: 8px;
+    padding: 6px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 11px;
+  }
+  .compare-item { display: flex; align-items: center; gap: 8px; }
+  .dot-pill { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  /* ==================== ESPACIO DE TRABAJO ==================== */
+  .workspace-view { height: 100%; display: grid; grid-template-columns: 306px 1fr; overflow: hidden; }
+  aside.sidebar {
+    background: var(--ies-surface); border-right: 1px solid var(--ies-border); padding: 8px 10px;
+    display: flex; flex-direction: column; gap: 6px; overflow-y: auto;
+  }
+  .lesson-header { border-bottom: 1px solid var(--ies-border); padding-bottom: 5px; }
+  .lesson-kicker {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--ies-accent-dark); letter-spacing: 0.4px;
+  }
+  .lesson-header h2 { font-size: 14.5px; color: var(--ies-dark); line-height: 1.2; }
+  .control-box {
+    background: var(--ies-bg); border: 1px solid var(--ies-border); border-radius: 8px;
+    padding: 7px 8px; display: flex; flex-direction: column; gap: 5px;
+  }
+  .control-label { font-size: 11px; font-weight: 700; color: var(--ies-dark); }
+  .example-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .example-btn {
+    background: #FFFFFF; border: 1.5px solid var(--ies-border); border-radius: 6px;
+    min-height: 38px; cursor: pointer; color: var(--ies-text);
+    display: flex; align-items: center; justify-content: center; transition: all 0.12s;
+  }
+  .example-btn:hover { border-color: var(--ies-primary); background: var(--ies-primary-soft); }
+  .example-btn.active { border-color: var(--ies-primary); background: var(--ies-primary); color: #FFFFFF; }
+  .example-btn math { font-size: 15px; }
+  .example-btn.active math { color: #FFFFFF; }
+  .math-card {
+    background: var(--ies-primary-soft); border: 1px solid #B8E2E8; border-radius: 8px;
+    padding: 7px 9px; font-size: 11.5px;
+  }
+  .math-card .math-main {
+    font-size: 16px; color: var(--ies-primary-dark); margin-bottom: 3px;
+    font-family: "JetBrains Mono", Consolas, monospace; font-weight: 700;
+  }
+  .math-card .math-main math { font-size: 16px; color: var(--ies-primary-dark); }
+  .math-card .math-detail { font-size: 11px; color: var(--ies-text); }
+  .eq-list { display: flex; flex-direction: column; gap: 4px; }
+  .eq-item {
+    background: #FFFFFF; border: 1px solid var(--ies-border); border-left: 3px solid var(--ies-secondary);
+    border-radius: 6px; padding: 4px 8px; font-size: 14px;
+  }
+  .eq-item math { font-size: 14px; }
+  .eq-note { font-size: 10.5px; color: var(--ies-muted); font-weight: 600; }
+  .alert-box {
+    background: var(--ies-accent-soft); border-left: 3px solid var(--ies-accent);
+    padding: 5px 7px; border-radius: 5px; font-size: 11px; color: #4F5E14;
+  }
+  .steps-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 6px; padding: 4px 6px; border-radius: 6px;
+    font-size: 11px; background: #FFFFFF; border: 1px solid var(--ies-border);
+    color: var(--ies-muted); transition: all 0.15s;
+  }
+  .step-item.active {
+    background: var(--ies-primary-soft); border-color: var(--ies-primary);
+    color: var(--ies-text); font-weight: 600;
+  }
+  .step-item.done { border-color: #A9DCCF; color: var(--ies-text); }
+  .step-num {
+    width: 17px; height: 17px; border-radius: 50%; background: var(--ies-border); color: var(--ies-text);
+    font-size: 10px; font-weight: 700; display: inline-flex; align-items: center;
+    justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .step-item.active .step-num { background: var(--ies-primary); color: #FFFFFF; }
+  .step-item.done .step-num { background: var(--ies-secondary); color: #FFFFFF; }
+  .fixed-badge {
+    display: inline-flex; align-items: center; gap: 5px; background: var(--ies-secondary-soft);
+    border: 1px solid #A9DCCF; color: var(--ies-secondary-dark); font-size: 10.5px;
+    font-weight: 700; padding: 3px 8px; border-radius: 99px; align-self: flex-start;
+  }
+  /* ==================== EDITOR MATEMÁTICO (TALLERES) ==================== */
+  .math-entry {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #FFFFFF; border: 1px solid var(--ies-border); border-radius: 8px; padding: 9px 6px;
+  }
+  .sign-toggle-math {
+    width: 38px; height: 46px; border-radius: 8px; cursor: pointer;
+    font-size: 24px; font-weight: 700; line-height: 1;
+    border: 2px solid var(--ies-primary); background: var(--ies-primary-soft);
+    color: var(--ies-primary-dark); display: inline-flex; align-items: center;
+    justify-content: center; transition: all 0.12s;
+  }
+  .sign-toggle-math.neg { border-color: var(--ies-accent-dark); background: var(--ies-accent-soft); color: var(--ies-accent-dark); }
+  .math-cell {
+    width: 56px; height: 34px; text-align: center;
+    font-family: "JetBrains Mono", Consolas, monospace; font-size: 18px; font-weight: 700;
+    color: var(--ies-text); background: #FFFFFF; border: 1.6px solid var(--ies-border); border-radius: 6px;
+  }
+  .math-cell:focus { outline: none; border-color: var(--ies-primary); box-shadow: 0 0 0 2px var(--ies-primary-soft); }
+  .math-cell::-webkit-outer-spin-button, .math-cell::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .math-cell { -moz-appearance: textfield; appearance: textfield; }
+  .frac-stack { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .frac-bar { width: 64px; height: 3px; background: var(--ies-dark); border-radius: 2px; }
+  .radical-expr { display: flex; align-items: flex-start; }
+  .radicand-box { border-top: 2.4px solid var(--ies-dark); padding-top: 4px; margin-left: -2px; }
+  .mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .mode-btn {
+    min-height: 34px; border: 1.5px solid var(--ies-border); border-radius: 6px; background: #FFFFFF;
+    font-size: 11.5px; font-weight: 700; cursor: pointer; color: var(--ies-text); padding: 3px 4px;
+    line-height: 1.15;
+  }
+  .mode-btn:hover:not(:disabled) { border-color: var(--ies-secondary); background: var(--ies-secondary-soft); }
+  .mode-btn.active { background: var(--ies-secondary); color: #FFFFFF; border-color: var(--ies-secondary); }
+  .mode-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .mode-hint { font-size: 10px; color: var(--ies-muted); font-weight: 600; }
+  /* ==================== LIENZO ==================== */
+  section.stage-area {
+    display: grid; grid-template-rows: 1fr 44px; height: 100%; background: #FFFFFF;
+    position: relative; overflow: hidden;
+  }
+  .canvas-wrapper {
+    position: relative; width: 100%; height: 100%; overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #FFFFFF 0%, #F7FAFA 100%);
+  }
+  #mainCanvas { width: 100%; height: 100%; display: block; }
+  .canvas-hud {
+    position: absolute; top: 8px; left: 10px; right: 10px; display: flex;
+    justify-content: space-between; align-items: flex-start; pointer-events: none; gap: 8px;
+  }
+  .hud-pill {
+    background: rgba(255,255,255,0.94); border: 1px solid var(--ies-border); border-radius: 7px;
+    padding: 4px 9px; font-size: 11.5px; font-weight: 600; color: var(--ies-dark);
+  }
+  .hud-legend {
+    display: flex; gap: 8px; font-size: 10.5px; font-weight: 600; background: rgba(255,255,255,0.94);
+    border: 1px solid var(--ies-border); border-radius: 7px; padding: 4px 8px;
+    color: var(--ies-muted); flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 4px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  footer.playback-bar {
+    height: 44px; background: var(--ies-bg); border-top: 1px solid var(--ies-border);
+    padding: 0 10px; display: flex; align-items: center; gap: 7px; user-select: none;
+  }
+  .pb-btn {
+    height: 31px; padding: 0 9px; border-radius: 6px; border: 1px solid var(--ies-border);
+    background: #FFFFFF; color: var(--ies-text); font-size: 11.5px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  }
+  .pb-btn:hover { border-color: var(--ies-primary); background: var(--ies-primary-soft); }
+  .pb-btn.primary-pb { background: var(--ies-primary); color: #FFFFFF; border-color: var(--ies-primary); }
+  .pb-btn.primary-pb:hover { background: var(--ies-primary-dark); }
+  .scrubber-wrap { flex: 1; display: flex; align-items: center; gap: 7px; min-width: 100px; }
+  #progressSlider { flex: 1; height: 6px; accent-color: var(--ies-primary); cursor: pointer; }
+  .pct-label {
+    font-family: "JetBrains Mono", Consolas, monospace; font-size: 11px; font-weight: 700;
+    color: var(--ies-muted); width: 36px; text-align: right;
+  }
+  .speed-select {
+    height: 31px; border: 1px solid var(--ies-border); border-radius: 6px; padding: 0 6px;
+    font-size: 11.5px; font-weight: 600; background: #FFFFFF; color: var(--ies-text); cursor: pointer;
+  }
+  .tools-toggle {
+    height: 31px; padding: 0 8px; border: 1px solid var(--ies-border); border-radius: 6px;
+    background: #FFFFFF; display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .tools-toggle input { width: 14px; height: 14px; accent-color: var(--ies-primary); cursor: pointer; }
+  .hidden { display: none !important; }
+  @media (max-width: 900px) {
+    html, body { overflow: auto; }
+    .workspace-view { grid-template-columns: 1fr; height: auto; }
+    section.stage-area { height: 420px; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto; }
+    .hero-banner { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <!-- ==================== CABECERA ==================== -->
+  <header class="topbar">
+    <div class="brand" onclick="switchView('home')" title="Volver a la portada">
+      <div class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="22" height="22">
+          <rect x="3" y="7" width="11" height="17" rx="2" fill="#00a4b7"/>
+          <rect x="18" y="4" width="11" height="20" rx="2" fill="#00a083"/>
+          <path d="M2 27 Q9 24 16 27 T30 27" stroke="#afcb37" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Representación en la recta real numérica</span>
+        <span class="brand-sub">Teorema de Tales · Teorema de Pitágoras</span>
+      </div>
+    </div>
+    <nav class="nav-tabs" id="navTabs">
+      <button type="button" class="nav-btn active" data-view="home" onclick="switchView('home')">Portada</button>
+      <button type="button" class="nav-btn" data-view="proper" onclick="switchView('proper')">1. Propias</button>
+      <button type="button" class="nav-btn" data-view="improper" onclick="switchView('improper')">2. Impropias</button>
+      <button type="button" class="nav-btn" data-view="rootsDirect" onclick="switchView('rootsDirect')">3. Raíces directas</button>
+      <button type="button" class="nav-btn" data-view="rootsChain" onclick="switchView('rootsChain')">4. Raíces encadenadas</button>
+      <button type="button" class="nav-btn" data-view="negatives" onclick="switchView('negatives')">5. Negativos</button>
+      <button type="button" class="nav-btn workshop-btn" data-view="workFrac" onclick="switchView('workFrac')">Taller Fracciones</button>
+      <button type="button" class="nav-btn workshop-btn" data-view="workRoot" onclick="switchView('workRoot')">Taller Raíces</button>
+    </nav>
+  </header>
+
+  <main class="app-body">
+    <!-- 0. PORTADA -->
+    <section id="view-home" class="home-view">
+      <div class="hero-banner">
+        <div class="hero-info">
+          <span class="hero-badge">Geometría y Números Reales</span>
+          <h1>Representación en la recta real numérica</h1>
+          <p>Construcción exacta, paso a paso, de <strong>números racionales</strong> con el <strong>Teorema de Tales</strong> (compás, escuadra y cartabón) y de <strong>raíces cuadradas</strong> con el <strong>Teorema de Pitágoras</strong>.</p>
+        </div>
+        <div class="hero-canvas-box">
+          <canvas id="heroCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        <div class="lesson-card" onclick="switchView('proper')">
+          <div>
+            <div class="card-tag">Lección 1 · Tales</div>
+            <div class="card-title">Fracciones Propias</div>
+            <div class="card-desc">Subdivisión exacta de la unidad en q partes iguales mediante rectas paralelas.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <mn>0</mn><mo>&lt;</mo><mfrac><mi>p</mi><mi>q</mi></mfrac><mo>&lt;</mo><mn>1</mn>
+            </math>
+          </div>
+        </div>
+
+        <div class="lesson-card" onclick="switchView('improper')">
+          <div>
+            <div class="card-tag">Lección 2 · Tales</div>
+            <div class="card-title">Fracciones Impropias</div>
+            <div class="card-desc">Se separa la parte entera y se aplica Tales a la parte fraccionaria.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <mfrac><mi>p</mi><mi>q</mi></mfrac><mo>=</mo><mi>c</mi><mo>+</mo><mfrac><mi>r</mi><mi>q</mi></mfrac>
+            </math>
+          </div>
+        </div>
+
+        <div class="lesson-card" onclick="switchView('rootsDirect')">
+          <div>
+            <div class="card-tag">Lección 3 · Pitágoras</div>
+            <div class="card-title">Raíces Directas</div>
+            <div class="card-desc">Un solo triángulo rectángulo de catetos enteros apoyado en la recta.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup>
+              <mo>=</mo><mi>n</mi>
+            </math>
+          </div>
+        </div>
+
+        <div class="lesson-card" onclick="switchView('rootsChain')">
+          <div>
+            <div class="card-tag">Lección 4 · Pitágoras</div>
+            <div class="card-title">Raíces Encadenadas</div>
+            <div class="card-desc">La hipotenusa obtenida se abate sobre la recta y es la base del triángulo siguiente.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <msup><mrow><mo>(</mo><msqrt><mi>m</mi></msqrt><mo>)</mo></mrow><mn>2</mn></msup>
+              <mo>+</mo><msup><mi>b</mi><mn>2</mn></msup><mo>=</mo><mi>n</mi>
+            </math>
+          </div>
+        </div>
+
+        <div class="lesson-card" onclick="switchView('negatives')">
+          <div>
+            <div class="card-tag">Lección 5 · Semieje negativo</div>
+            <div class="card-title">Números Negativos</div>
+            <div class="card-desc">Las mismas construcciones proyectadas hacia la izquierda del cero.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <mo>&#8722;</mo><mfrac><mi>p</mi><mi>q</mi></mfrac>
+              <mo>,</mo><mspace width="0.3em"/>
+              <mo>&#8722;</mo><msqrt><mi>n</mi></msqrt>
+            </math>
+          </div>
+        </div>
+
+        <div class="lesson-card workshop-card" onclick="switchView('workFrac')">
+          <div>
+            <div class="card-tag">Taller 1 · Trabajo personal</div>
+            <div class="card-title">Taller de Fracciones</div>
+            <div class="card-desc">Escribe el signo, el numerador y el denominador que quieras y observa la construcción.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <mo>&#177;</mo><mfrac><mi>p</mi><mi>q</mi></mfrac>
+            </math>
+          </div>
+        </div>
+
+        <div class="lesson-card workshop-card" onclick="switchView('workRoot')">
+          <div>
+            <div class="card-tag">Taller 2 · Trabajo personal</div>
+            <div class="card-title">Taller de Raíces</div>
+            <div class="card-desc">Escribe el signo y el radicando, y elige construcción directa o encadenada.</div>
+          </div>
+          <div class="card-math">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <mo>&#177;</mo><msqrt><mi>n</mi></msqrt>
+            </math>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-strip">
+        <div class="compare-item">
+          <span class="dot-pill" style="background:#00a4b7;"></span>
+          <span><strong>Teorema de Tales:</strong> rectas paralelas que cortan dos secantes determinan segmentos proporcionales, lo que permite dividir la unidad en <em>q</em> partes iguales.</span>
+        </div>
+        <div class="compare-item">
+          <span class="dot-pill" style="background:#00a083;"></span>
+          <span><strong>Teorema de Pitágoras:</strong> la hipotenusa mide <math xmlns="http://www.w3.org/1998/Math/MathML"><msqrt><mrow><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup></mrow></msqrt></math>, y el compás la traslada a la recta.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESPACIO DE TRABAJO -->
+    <section id="view-workspace" class="workspace-view hidden">
+      <aside class="sidebar" id="sidebarControls"></aside>
+      <section class="stage-area">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="mainCanvas"></canvas>
+          <div class="canvas-hud">
+            <div class="hud-pill" id="hudStatus">Preparado</div>
+            <div class="hud-legend" id="hudLegend"></div>
+          </div>
+        </div>
+        <footer class="playback-bar">
+          <button type="button" class="pb-btn primary-pb" id="btnPlayPause" onclick="togglePlay()">⏸ Pausar</button>
+          <button type="button" class="pb-btn" onclick="restartAnim()" title="Reiniciar la animación">↺ Repetir</button>
+          <button type="button" class="pb-btn" onclick="nextStep()" title="Avanzar al siguiente paso">⏭ Paso</button>
+          <div class="scrubber-wrap">
+            <input type="range" id="progressSlider" min="0" max="1000" value="0">
+            <span class="pct-label" id="pctLabel">0%</span>
+          </div>
+          <select class="speed-select" id="speedSelect" onchange="changeSpeed()" title="Velocidad de animación">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.5">1.5×</option>
+          </select>
+          <label class="tools-toggle" title="Mostrar u ocultar compás, escuadra y cartabón">
+            <input type="checkbox" id="chkInstruments" checked onchange="toggleInstruments()">
+            <span>📐 Instrumentos</span>
+          </label>
+        </footer>
+      </section>
+    </section>
+  </main>
+
+<script>
+/* ==========================================================================
+   ESTADO GLOBAL
+   ========================================================================== */
+const state = {
+  view: 'home',
+  playing: true,
+  progress: 0,
+  speed: 1,
+  showTools: true,
+  lastTs: null,
+  durationMs: 9500,
+  /* Lecciones 1-5: cuatro ejemplos fijos accesibles por botón */
+  exIdx: { proper: 0, improper: 0, rootsDirect: 0, rootsChain: 0, negatives: 0 },
+  /* Talleres: entrada libre, sin comprobaciones */
+  workFrac: { sign: 1, p: 5, q: 4 },
+  workRoot: { sign: 1, n: 5, mode: 'direct' }
+};
+
+/* Cuatro ejemplos fijos por lección */
+const EXAMPLES = {
+  proper:      [[3,5],[2,3],[4,7],[5,8]],
+  improper:    [[7,4],[8,3],[11,5],[13,6]],
+  rootsDirect: [5, 2, 10, 13],
+  rootsChain:  [3, 6, 7, 11],
+  negatives:   ['prop','imp','rdir','rchain']
+};
+const LESSON_VIEWS = ['proper','improper','rootsDirect','rootsChain','negatives'];
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
+  if (typeof ctx.roundRect === 'function') { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); return; }
+  const rad = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rad, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rad);
+  ctx.arcTo(x + w, y + h, x, y + h, rad);
+  ctx.arcTo(x, y + h, x, y, rad);
+  ctx.arcTo(x, y, x + w, y, rad);
+  ctx.closePath();
+}
+
+function getThemeColors() {
+  const s = getComputedStyle(document.documentElement);
+  const pick = (name, fb) => (s.getPropertyValue(name).trim() || fb);
+  return {
+    dark: pick('--ies-dark', '#3b3b3d'),
+    primary: pick('--ies-primary', '#00a4b7'),
+    primaryDark: pick('--ies-primary-dark', '#007F8E'),
+    primarySoft: pick('--ies-primary-soft', '#E2F4F7'),
+    secondary: pick('--ies-secondary', '#00a083'),
+    secondaryDark: pick('--ies-secondary-dark', '#007E67'),
+    secondarySoft: pick('--ies-secondary-soft', '#E0F3EF'),
+    accent: pick('--ies-accent', '#afcb37'),
+    accentDark: pick('--ies-accent-dark', '#7E9620'),
+    text: pick('--ies-text', '#3b3b3d'),
+    muted: pick('--ies-muted', '#6B6B70'),
+    border: pick('--ies-border', '#D9E0E1')
+  };
+}
+
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { [a, b] = [b, a % b]; }
+  return a || 1;
+}
+function isPerfectSquare(k) { const r = Math.round(Math.sqrt(k)); return r * r === k; }
+
+/* ==========================================================================
+   MATHML: FRAGMENTOS REUTILIZABLES
+   ========================================================================== */
+const ML = 'http://www.w3.org/1998/Math/MathML';
+function mlWrap(inner) { return `<math xmlns="${ML}">${inner}</math>`; }
+function mlFrac(a, b) { return `<mfrac><mn>${a}</mn><mn>${b}</mn></mfrac>`; }
+function mlSqrt(x) { return `<msqrt><mn>${x}</mn></msqrt>`; }
+function mlNeg(inner) { return `<mo>&#8722;</mo>${inner}`; }
+/* Fracción con signo opcional */
+function mlFraction(sign, p, q) { return mlWrap((sign < 0 ? '<mo>&#8722;</mo>' : '') + mlFrac(p, q)); }
+/* Raíz con signo opcional */
+function mlRoot(sign, n) { return mlWrap((sign < 0 ? '<mo>&#8722;</mo>' : '') + mlSqrt(n)); }
+/* Número mixto c + r/q, con signo global entre paréntesis si es negativo */
+function mlMixed(sign, c, r, q) {
+  const core = `<mn>${c}</mn><mo>+</mo>${mlFrac(r, q)}`;
+  return mlWrap(sign < 0 ? `<mo>&#8722;</mo><mo>(</mo>${core}<mo>)</mo>` : core);
+}
+/* Identidad pitagórica de un paso:  a² + b² = n   ó   (√m)² + b² = n */
+function mlPythStep(baseVal, leg, hypVal) {
+  const basePart = isPerfectSquare(baseVal)
+    ? `<msup><mn>${Math.round(Math.sqrt(baseVal))}</mn><mn>2</mn></msup>`
+    : `<msup><mrow><mo>(</mo>${mlSqrt(baseVal)}<mo>)</mo></mrow><mn>2</mn></msup>`;
+  return mlWrap(`${basePart}<mo>+</mo><msup><mn>${leg}</mn><mn>2</mn></msup><mo>=</mo><mn>${hypVal}</mn>`);
+}
+/* Igualdad (√m)² = m, para justificar el cateto irracional */
+function mlSquareOfRoot(m) {
+  return mlWrap(`<msup><mrow><mo>(</mo>${mlSqrt(m)}<mo>)</mo></mrow><mn>2</mn></msup><mo>=</mo><mn>${m}</mn>`);
+}
+/* Hipotenusa como raíz de la suma */
+function mlHyp(hypVal) {
+  return mlWrap(`<msqrt><mn>${hypVal}</mn></msqrt>`);
+}
+function radicalSvg(hBox) {
+  return `<svg width="15" height="${hBox}" viewBox="0 0 15 ${hBox}" aria-hidden="true">
+      <path d="M1 ${hBox * 0.62} L4.5 ${hBox * 0.62} L8 ${hBox - 3} L13 3 L15 3"
+            fill="none" stroke="var(--ies-dark)" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+}
+
+/* ==========================================================================
+   DESCOMPOSICIONES PITAGÓRICAS
+   ========================================================================== */
+/* Directa: n = a² + b² con a y b enteros positivos (un solo triángulo) */
+function solveDirect(n) {
+  if (isPerfectSquare(n)) return null;
+  for (let a = Math.floor(Math.sqrt(n)); a >= 1; a--) {
+    const rest = n - a * a;
+    if (rest >= 1 && isPerfectSquare(rest)) {
+      return [{ baseVal: a * a, baseLabel: `${a}`, leg: Math.round(Math.sqrt(rest)), hypVal: n }];
+    }
+  }
+  return null;
+}
+
+/* Cadena de exactamente k triángulos:
+   a² + b₁² = m₁,  m₁ + b₂² = m₂,  …,  m_{k-1} + b_k² = n
+   Se prefieren cadenas sin radicandos intermedios que sean cuadrados perfectos. */
+function solveChainExact(n, k) {
+  let best = null, bestPenalty = Infinity;
+  const walk = (cur, chain) => {
+    if (chain.length === k) {
+      if (cur !== n) return;
+      const penalty = chain.slice(0, -1)
+        .reduce((acc, s) => acc + (isPerfectSquare(s.hypVal) ? 1 : 0), 0);
+      if (penalty < bestPenalty) { bestPenalty = penalty; best = chain.slice(); }
+      return;
+    }
+    for (let b = 1; cur + b * b <= n; b++) {
+      const nxt = cur + b * b;
+      chain.push({
+        baseVal: cur,
+        baseLabel: isPerfectSquare(cur) ? `${Math.round(Math.sqrt(cur))}` : `√${cur}`,
+        leg: b,
+        hypVal: nxt
+      });
+      walk(nxt, chain);
+      chain.pop();
+    }
+  };
+  for (let a = 1; a * a < n; a++) walk(a * a, []);
+  return best;
+}
+
+/* Cadena encadenada más corta, de 2 a 3 triángulos */
+function solveChain(n) {
+  if (isPerfectSquare(n)) return null;
+  for (let k = 2; k <= 3; k++) {
+    const sol = solveChainExact(n, k);
+    if (sol) return sol;
+  }
+  return null;
+}
+
+/* Cualquier construcción válida, priorizando la más corta */
+function solveAny(n) {
+  return solveDirect(n) || solveChain(n) || solveChainExact(n, 4) || [];
+}
+
+/* Pasos a dibujar según el modo elegido en el taller */
+function stepsForMode(n, mode) {
+  if (isPerfectSquare(n)) return [];
+  if (mode === 'direct') return solveDirect(n) || solveAny(n);
+  return solveChain(n) || solveAny(n);
+}
+function canDirect(n) { return !isPerfectSquare(n) && solveDirect(n) !== null; }
+function canChain(n) { return !isPerfectSquare(n) && solveChain(n) !== null; }
+
+/* ==========================================================================
+   NAVEGACIÓN
+   ========================================================================== */
+function switchView(viewName) {
+  if (!viewName) return;
+  state.view = viewName;
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === viewName);
+  });
+  const homeEl = document.getElementById('view-home');
+  const workEl = document.getElementById('view-workspace');
+  if (viewName === 'home') {
+    homeEl.classList.remove('hidden');
+    workEl.classList.add('hidden');
+    resizeHeroCanvas();
+    return;
+  }
+  homeEl.classList.add('hidden');
+  workEl.classList.remove('hidden');
+  if (viewName === 'workRoot') syncRootMode();
+  buildSidebar();
+  restartAnim();
+  resizeMainCanvas();
+}
+document.getElementById('navTabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('.nav-btn');
+  if (btn && btn.dataset.view) switchView(btn.dataset.view);
+});
+
+function currentExample(v) { return EXAMPLES[v][state.exIdx[v] % EXAMPLES[v].length]; }
+function setExample(v, i) {
+  state.exIdx[v] = i;
+  buildSidebar();
+  restartAnim();
+}
+
+/* Botonera de los cuatro ejemplos de cada lección */
+function exampleButtons(v, labelFn) {
+  const cur = state.exIdx[v];
+  return `<div class="example-row">${EXAMPLES[v].map((item, i) =>
+    `<button type="button" class="example-btn ${i === cur ? 'active' : ''}" onclick="setExample('${v}', ${i})">${labelFn(item)}</button>`
+  ).join('')}</div>`;
+}
+
+/* ==========================================================================
+   PANEL LATERAL
+   ========================================================================== */
+function buildSidebar() {
+  const sb = document.getElementById('sidebarControls');
+  const v = state.view;
+
+  /* ---------- LECCIÓN 1 ---------- */
+  if (v === 'proper') {
+    const [p, q] = currentExample(v);
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Lección 1 · Teorema de Tales</div>
+        <h2>Fracciones Propias</h2>
+      </div>
+      <div class="control-box">
+        <div class="control-label">Ejemplos</div>
+        ${exampleButtons(v, ([a, b]) => mlWrap(mlFrac(a, b)))}
+      </div>
+      <div class="math-card">
+        <div class="math-main">${mlWrap(mlFrac(p, q) + `<mo>&#8776;</mo><mn>${(p/q).toFixed(3).replace('.', ',')}</mn>`)}</div>
+        <div class="math-detail">Dividimos la unidad en <strong>${q}</strong> partes iguales y tomamos <strong>${p}</strong> desde el origen. Las rectas paralelas garantizan que las partes son iguales.</div>
+      </div>
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Trazar una semirrecta auxiliar oblicua desde <strong>0</strong>.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Con el <strong>compás</strong>, marcar <strong>${q}</strong> arcos iguales (M₁…M<sub>${q}</sub>).</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span>Unir la última marca <strong>M<sub>${q}</sub></strong> con el punto <strong>1</strong>.</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Deslizar la <strong>escuadra apoyada en el cartabón</strong> hasta <strong>M<sub>${p}</sub></strong>.</span></li>
+      </ul>
+    `;
+
+  /* ---------- LECCIÓN 2 ---------- */
+  } else if (v === 'improper') {
+    const [p, q] = currentExample(v);
+    const c = Math.floor(p / q), r = p % q;
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Lección 2 · Teorema de Tales</div>
+        <h2>Fracciones Impropias</h2>
+      </div>
+      <div class="control-box">
+        <div class="control-label">Ejemplos</div>
+        ${exampleButtons(v, ([a, b]) => mlWrap(mlFrac(a, b)))}
+      </div>
+      <div class="math-card">
+        <div class="math-main">${mlWrap(mlFrac(p, q) + `<mo>=</mo><mn>${c}</mn><mo>+</mo>` + mlFrac(r, q))}</div>
+        <div class="math-detail">Separamos la parte entera <strong>${c}</strong> y construimos solo la parte fraccionaria <strong>${r}/${q}</strong> a partir de ella.</div>
+      </div>
+      <div class="eq-list">
+        <div class="eq-item">${mlWrap(`<mn>${p}</mn><mo>=</mo><mn>${q}</mn><mo>&#8901;</mo><mn>${c}</mn><mo>+</mo><mn>${r}</mn>`)}</div>
+      </div>
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Situar la parte entera <strong>${c}</strong> y trazar la semirrecta desde ella.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Marcar <strong>${q}</strong> divisiones iguales con el <strong>compás</strong>.</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span>Unir <strong>M<sub>${q}</sub></strong> con el entero siguiente <strong>${c+1}</strong>.</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Deslizar <strong>escuadra y cartabón</strong> hasta <strong>M<sub>${r}</sub></strong>.</span></li>
+      </ul>
+    `;
+
+  /* ---------- LECCIÓN 3 ---------- */
+  } else if (v === 'rootsDirect') {
+    const n = currentExample(v);
+    const st = (solveDirect(n) || solveAny(n))[0];
+    const a = Math.round(Math.sqrt(st.baseVal));
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Lección 3 · Teorema de Pitágoras</div>
+        <h2>Raíces Directas</h2>
+      </div>
+      <div class="control-box">
+        <div class="control-label">Ejemplos</div>
+        ${exampleButtons(v, (val) => mlWrap(mlSqrt(val)))}
+      </div>
+      <div class="math-card">
+        <div class="math-main">${mlWrap(mlSqrt(n) + `<mo>&#8776;</mo><mn>${Math.sqrt(n).toFixed(3).replace('.', ',')}</mn>`)}</div>
+        <div class="math-detail">Un único triángulo rectángulo de catetos enteros <strong>a = ${a}</strong> y <strong>b = ${st.leg}</strong>.</div>
+      </div>
+      <div class="eq-list">
+        <div class="eq-item">${mlPythStep(st.baseVal, st.leg, n)}</div>
+        <div class="eq-note">La hipotenusa mide ${mlHyp(n)} y el compás la traslada a la recta.</div>
+      </div>
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Marcar la base <strong>${a}</strong> sobre la recta.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Levantar con la <strong>escuadra</strong> el cateto <strong>${st.leg}</strong> (90°).</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span>Trazar la hipotenusa.</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Pinchar el <strong>compás en 0</strong> y abatirla sobre la recta.</span></li>
+      </ul>
+    `;
+
+  /* ---------- LECCIÓN 4 ---------- */
+  } else if (v === 'rootsChain') {
+    const n = currentExample(v);
+    const steps = solveChain(n) || solveAny(n);
+    const eqs = steps.map((s, i) => {
+      const just = isPerfectSquare(s.baseVal) ? '' :
+        `<div class="eq-note">porque ${mlSquareOfRoot(s.baseVal)}</div>`;
+      return `<div class="eq-item">${mlPythStep(s.baseVal, s.leg, s.hypVal)}</div>${just}`;
+    }).join('');
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Lección 4 · Teorema de Pitágoras</div>
+        <h2>Raíces Encadenadas</h2>
+      </div>
+      <div class="control-box">
+        <div class="control-label">Ejemplos</div>
+        ${exampleButtons(v, (val) => mlWrap(mlSqrt(val)))}
+      </div>
+      <div class="math-card">
+        <div class="math-main">${mlWrap(mlSqrt(n) + `<mo>&#8776;</mo><mn>${Math.sqrt(n).toFixed(3).replace('.', ',')}</mn>`)}</div>
+        <div class="math-detail">Cada hipotenusa se <strong>abate con el compás sobre la recta</strong> y se convierte en la <strong>base del triángulo siguiente</strong>.</div>
+      </div>
+      <div class="eq-list">${eqs}</div>
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Base apoyada sobre la recta real.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Cateto perpendicular con la <strong>escuadra</strong> (90°).</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span>Trazar la nueva hipotenusa.</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Abatir con el <strong>compás</strong> y reutilizar como base.</span></li>
+      </ul>
+    `;
+
+  /* ---------- LECCIÓN 5 ---------- */
+  } else if (v === 'negatives') {
+    const preset = currentExample(v);
+    const labels = {
+      prop:   mlWrap(mlNeg(mlFrac(3, 5))),
+      imp:    mlWrap(mlNeg(mlFrac(7, 4))),
+      rdir:   mlWrap(mlNeg(mlSqrt(5))),
+      rchain: mlWrap(mlNeg(mlSqrt(3)))
+    };
+    let mainEq = '', detail = '', extra = '';
+    if (preset === 'prop') {
+      mainEq = mlWrap(mlNeg(mlFrac(3, 5)) + '<mo>=</mo><mn>&#8722;0,6</mn>');
+      detail = 'Trazamos la semirrecta auxiliar desde 0 hacia la izquierda y dividimos la unidad en 5 partes iguales.';
+    } else if (preset === 'imp') {
+      mainEq = mlWrap(mlNeg(mlFrac(7, 4)) + '<mo>=</mo><mo>&#8722;</mo><mo>(</mo><mn>1</mn><mo>+</mo>' + mlFrac(3, 4) + '<mo>)</mo>');
+      detail = 'Separamos la parte entera 1 y avanzamos 3/4 más hacia la izquierda.';
+      extra = `<div class="alert-box"><strong>Atención al signo:</strong> &minus;7/4 = &minus;1,75 queda a la <strong>izquierda</strong> de &minus;1, no entre &minus;1 y 0.</div>`;
+    } else if (preset === 'rdir') {
+      mainEq = mlWrap(mlNeg(mlSqrt(5)) + `<mo>&#8776;</mo><mn>&#8722;2,236</mn>`);
+      detail = 'Triángulo de catetos 2 y 1 apoyado en el semieje negativo.';
+      extra = `<div class="eq-list"><div class="eq-item">${mlPythStep(4, 1, 5)}</div></div>`;
+    } else {
+      mainEq = mlWrap(mlNeg(mlSqrt(3)) + `<mo>&#8776;</mo><mn>&#8722;1,732</mn>`);
+      detail = 'Cadena √2 → √3 construida hacia la izquierda del cero.';
+      extra = `<div class="eq-list">
+        <div class="eq-item">${mlPythStep(1, 1, 2)}</div>
+        <div class="eq-item">${mlPythStep(2, 1, 3)}</div>
+        <div class="eq-note">porque ${mlSquareOfRoot(2)}</div>
+      </div>`;
+    }
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Lección 5 · Semieje negativo</div>
+        <h2>Números Negativos</h2>
+      </div>
+      <div class="control-box">
+        <div class="control-label">Ejemplos</div>
+        ${exampleButtons(v, (id) => labels[id])}
+      </div>
+      <div class="math-card">
+        <div class="math-main">${mainEq}</div>
+        <div class="math-detail">${detail}</div>
+      </div>
+      ${extra}
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Orientar la construcción hacia la <strong>izquierda del 0</strong>.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Marcas de compás o cateto perpendicular.</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span><strong>Escuadra y cartabón</strong> (Tales) o hipotenusa (Pitágoras).</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Marcar el punto exacto a la izquierda del origen.</span></li>
+      </ul>
+    `;
+
+  /* ---------- TALLER 1: FRACCIONES ---------- */
+  } else if (v === 'workFrac') {
+    const wf = state.workFrac;
+    const g = gcd(wf.p, wf.q);
+    const sp = wf.p / g, sq = wf.q / g;
+    const c = Math.floor(sp / sq), r = sp % sq;
+    const val = wf.sign * (wf.p / wf.q);
+    const isProper = sp < sq;
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Taller 1 · Trabajo personal</div>
+        <h2>Escribe tu fracción</h2>
+      </div>
+
+      <div class="math-entry">
+        <button type="button" class="sign-toggle-math ${wf.sign < 0 ? 'neg' : ''}"
+                onclick="toggleSign('workFrac')" title="Cambiar el signo">${wf.sign < 0 ? '&minus;' : '+'}</button>
+        <div class="frac-stack">
+          <input type="number" class="math-cell" min="1" max="60" value="${wf.p}"
+                 aria-label="numerador" onchange="setFracPart('p', this.value)">
+          <div class="frac-bar"></div>
+          <input type="number" class="math-cell" min="2" max="20" value="${wf.q}"
+                 aria-label="denominador" onchange="setFracPart('q', this.value)">
+        </div>
+      </div>
+
+      <div class="math-card">
+        <div class="math-main">${mlFraction(wf.sign, wf.p, wf.q)}${mlWrap(`<mo>&#8776;</mo><mn>${val.toFixed(3).replace('.', ',')}</mn>`)}</div>
+        <div class="math-detail">
+          ${g > 1 ? `Simplificada: <strong>${mlFraction(wf.sign, sp, sq)}</strong>. ` : ''}
+          ${isProper ? 'Fracción propia: se divide la unidad en ' + sq + ' partes.' :
+            (r === 0 ? 'Resultado entero: se marca directamente.' :
+             'Fracción impropia: ' + mlMixed(wf.sign, c, r, sq) + '.')}
+        </div>
+      </div>
+
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Semirrecta auxiliar desde el punto de partida.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Marcar <strong>${sq}</strong> divisiones iguales con el <strong>compás</strong>.</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span>Unir la última marca con el extremo de la unidad.</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Deslizar <strong>escuadra y cartabón</strong> y proyectar el punto.</span></li>
+      </ul>
+      <div class="eq-note">Cambia los números y la construcción se redibuja al instante.</div>
+    `;
+
+  /* ---------- TALLER 2: RAÍCES ---------- */
+  } else if (v === 'workRoot') {
+    const wr = state.workRoot;
+    const perfect = isPerfectSquare(wr.n);
+    const dOk = canDirect(wr.n), cOk = canChain(wr.n);
+    const steps = stepsForMode(wr.n, wr.mode);
+    const eqs = steps.map(s => {
+      const just = isPerfectSquare(s.baseVal) ? '' :
+        `<div class="eq-note">porque ${mlSquareOfRoot(s.baseVal)}</div>`;
+      return `<div class="eq-item">${mlPythStep(s.baseVal, s.leg, s.hypVal)}</div>${just}`;
+    }).join('');
+    sb.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-kicker">Taller 2 · Trabajo personal</div>
+        <h2>Escribe tu raíz</h2>
+      </div>
+
+      <div class="math-entry">
+        <button type="button" class="sign-toggle-math ${wr.sign < 0 ? 'neg' : ''}"
+                onclick="toggleSign('workRoot')" title="Cambiar el signo">${wr.sign < 0 ? '&minus;' : '+'}</button>
+        <div class="radical-expr">
+          ${radicalSvg(42)}
+          <div class="radicand-box">
+            <input type="number" class="math-cell" min="2" max="60" value="${wr.n}"
+                   aria-label="radicando" onchange="setRootN(this.value)">
+          </div>
+        </div>
+      </div>
+
+      <div class="control-box">
+        <div class="control-label">Tipo de construcción</div>
+        <div class="mode-row">
+          <button type="button" class="mode-btn ${wr.mode === 'direct' ? 'active' : ''}"
+                  ${dOk ? '' : 'disabled'} onclick="setRootMode('direct')">Directa<br><span style="font-weight:600;font-size:10px">un triángulo</span></button>
+          <button type="button" class="mode-btn ${wr.mode === 'chain' ? 'active' : ''}"
+                  ${cOk ? '' : 'disabled'} onclick="setRootMode('chain')">Encadenada<br><span style="font-weight:600;font-size:10px">varios triángulos</span></button>
+        </div>
+        <div class="mode-hint">${
+          perfect ? 'Es un cuadrado perfecto: no necesita construcción.' :
+          (!dOk ? 'Esta raíz no admite construcción directa con catetos enteros: solo encadenada.' :
+          (!cOk ? 'Esta raíz se resuelve con un único triángulo.' :
+           'Puedes comparar las dos formas de llegar al mismo punto.'))
+        }</div>
+      </div>
+
+      <div class="math-card">
+        <div class="math-main">${mlRoot(wr.sign, wr.n)}${mlWrap(`<mo>&#8776;</mo><mn>${(wr.sign * Math.sqrt(wr.n)).toFixed(3).replace('.', ',')}</mn>`)}</div>
+        <div class="math-detail">${perfect
+          ? `Cuadrado perfecto: ${mlWrap(mlSqrt(wr.n) + `<mo>=</mo><mn>${Math.round(Math.sqrt(wr.n))}</mn>`)}.`
+          : (steps.length > 1
+              ? `Cadena de <strong>${steps.length}</strong> triángulos: cada hipotenusa se abate y es la base siguiente.`
+              : 'Un único triángulo rectángulo de catetos enteros.')}</div>
+      </div>
+
+      ${eqs ? `<div class="eq-list">${eqs}</div>` : ''}
+
+      <ul class="steps-list" id="stepsList">
+        <li class="step-item" data-step="0"><span class="step-num">1</span><span>Base apoyada sobre la recta real.</span></li>
+        <li class="step-item" data-step="1"><span class="step-num">2</span><span>Cateto perpendicular con la <strong>escuadra</strong> (90°).</span></li>
+        <li class="step-item" data-step="2"><span class="step-num">3</span><span>Hipotenusa de longitud ${mlHyp(wr.n)}.</span></li>
+        <li class="step-item" data-step="3"><span class="step-num">4</span><span>Abatir con el <strong>compás</strong> desde el 0.</span></li>
+      </ul>
+    `;
+  }
+}
+
+/* ==========================================================================
+   HANDLERS DE LOS TALLERES
+   ========================================================================== */
+function toggleSign(which) {
+  state[which].sign *= -1;
+  buildSidebar();
+  restartAnim();
+}
+function setFracPart(field, raw) {
+  const wf = state.workFrac;
+  let val = parseInt(raw, 10);
+  if (isNaN(val)) val = (field === 'p') ? 1 : 2;
+  if (field === 'p') wf.p = Math.max(1, Math.min(60, val));
+  if (field === 'q') wf.q = Math.max(2, Math.min(20, val));
+  buildSidebar();
+  restartAnim();
+}
+function syncRootMode() {
+  const wr = state.workRoot;
+  if (isPerfectSquare(wr.n)) return;
+  if (wr.mode === 'direct' && !canDirect(wr.n)) wr.mode = 'chain';
+  if (wr.mode === 'chain' && !canChain(wr.n)) wr.mode = 'direct';
+}
+function setRootN(raw) {
+  const wr = state.workRoot;
+  let val = parseInt(raw, 10);
+  if (isNaN(val)) val = 2;
+  wr.n = Math.max(2, Math.min(60, val));
+  syncRootMode();
+  buildSidebar();
+  restartAnim();
+}
+function setRootMode(mode) {
+  state.workRoot.mode = mode;
+  buildSidebar();
+  restartAnim();
+}
+
+/* ==========================================================================
+   REPRODUCCIÓN
+   ========================================================================== */
+function togglePlay() {
+  if (state.progress >= 1) state.progress = 0;
+  state.playing = !state.playing;
+  updatePlayBtn();
+}
+function updatePlayBtn() {
+  const btn = document.getElementById('btnPlayPause');
+  if (btn) btn.textContent = state.playing ? '⏸ Pausar' : '▶ Reproducir';
+}
+function restartAnim() { state.progress = 0; state.playing = true; updatePlayBtn(); }
+function nextStep() {
+  state.playing = false;
+  updatePlayBtn();
+  const milestones = [0.25, 0.50, 0.80, 1.0];
+  state.progress = milestones.find(m => m > state.progress + 0.01) || 1.0;
+}
+function changeSpeed() { state.speed = parseFloat(document.getElementById('speedSelect').value) || 1; }
+function toggleInstruments() { state.showTools = document.getElementById('chkInstruments').checked; }
+
+document.getElementById('progressSlider').addEventListener('input', (e) => {
+  state.playing = false;
+  updatePlayBtn();
+  state.progress = parseInt(e.target.value, 10) / 1000;
+});
+
+let lastAxisTransform = null;
+
+/* ==========================================================================
+   MOTOR DE DIBUJO TÉCNICO: COMPÁS, ESCUADRA Y CARTABÓN (ENCUADRE SEGURO)
+   ========================================================================== */
+function drawCompass(ctx, pivot, tip, headHeight, colors, minTopY = 26) {
+  const dx = tip.x - pivot.x;
+  const dy = tip.y - pivot.y;
+  const span = Math.hypot(dx, dy);
+  if (span < 4) return;
+  const midX = (pivot.x + tip.x) / 2;
+  const midY = (pivot.y + tip.y) / 2;
+  let nx = dy / span;
+  let ny = -dx / span;
+  if (ny > 0) { nx = -nx; ny = -ny; }
+  let h = Math.max(headHeight, span * 0.62);
+  if (ny < -0.05 && midY + ny * h < minTopY) {
+    const maxAllowedH = (minTopY - midY) / ny;
+    h = Math.max(span * 0.48, Math.min(h, maxAllowedH));
+  }
+  const hinge = { x: midX + nx * h, y: midY + ny * h };
+
+  ctx.save();
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.shadowColor = 'rgba(59,59,61,0.18)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 3;
+
+  ctx.strokeStyle = colors.dark;
+  ctx.lineWidth = 4.2;
+  ctx.beginPath();
+  ctx.moveTo(hinge.x, hinge.y);
+  ctx.lineTo(pivot.x + (hinge.x - pivot.x) * 0.14, pivot.y + (hinge.y - pivot.y) * 0.14);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#1F1F21';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(pivot.x + (hinge.x - pivot.x) * 0.14, pivot.y + (hinge.y - pivot.y) * 0.14);
+  ctx.lineTo(pivot.x, pivot.y);
+  ctx.stroke();
+
+  ctx.strokeStyle = colors.dark;
+  ctx.lineWidth = 4.2;
+  ctx.beginPath();
+  ctx.moveTo(hinge.x, hinge.y);
+  ctx.lineTo(tip.x + (hinge.x - tip.x) * 0.16, tip.y + (hinge.y - tip.y) * 0.16);
+  ctx.stroke();
+
+  ctx.strokeStyle = colors.accent;
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(tip.x + (hinge.x - tip.x) * 0.16, tip.y + (hinge.y - tip.y) * 0.16);
+  ctx.lineTo(tip.x, tip.y);
+  ctx.stroke();
+
+  const rArc = Math.min(h * 0.45, 34);
+  const a1 = Math.atan2(pivot.y - hinge.y, pivot.x - hinge.x);
+  const a2 = Math.atan2(tip.y - hinge.y, tip.x - hinge.x);
+  ctx.strokeStyle = '#8A8A90';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(hinge.x, hinge.y, rArc, Math.min(a1, a2), Math.max(a1, a2));
+  ctx.stroke();
+
+  ctx.shadowColor = 'transparent';
+  ctx.strokeStyle = colors.primary;
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(hinge.x, hinge.y);
+  ctx.lineTo(hinge.x + nx * 14, hinge.y + ny * 14);
+  ctx.stroke();
+
+  ctx.fillStyle = colors.primary;
+  ctx.beginPath();
+  ctx.arc(hinge.x, hinge.y, 6.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  ctx.arc(hinge.x, hinge.y, 2.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawThalesSetSquares(ctx, Mq, E, Mp, slideAlpha, colors, canvasW, canvasH, topPad) {
+  const vx = E.x - Mq.x;
+  const vy = E.y - Mq.y;
+  const L = Math.hypot(vx, vy);
+  if (L < 8) return;
+  const u = { x: vx / L, y: vy / L };
+  const n1 = { x: -u.y, y: u.x };
+  const n2 = { x: u.y, y: -u.x };
+  const score1 = -n1.x * 0.7 + n1.y * 0.5;
+  const score2 = -n2.x * 0.7 + n2.y * 0.5;
+  const nBody = score1 >= score2 ? n1 : n2;
+
+  const availH = Math.max(180, canvasH - topPad - 24);
+  const H = Math.min(Math.max(L * 1.12, 88), availH * 0.48, canvasW * 0.24);
+
+  const midGuide = { x: (Mq.x + E.x) / 2, y: (Mq.y + E.y) / 2 };
+  const V1_0 = { x: midGuide.x - (H / 2) * u.x, y: midGuide.y - (H / 2) * u.y };
+  const V2_0 = { x: midGuide.x + (H / 2) * u.x, y: midGuide.y + (H / 2) * u.y };
+  const V3_0 = { x: midGuide.x - (H / 2) * nBody.x, y: midGuide.y - (H / 2) * nBody.y };
+
+  const invSqrt2 = 1 / Math.SQRT2;
+  const s = { x: (u.x - nBody.x) * invSqrt2, y: (u.y - nBody.y) * invSqrt2 };
+  const nOut = { x: (-u.x - nBody.x) * invSqrt2, y: (-u.y - nBody.y) * invSqrt2 };
+
+  const dBody = (Mp.x - Mq.x) * nBody.x + (Mp.y - Mq.y) * nBody.y;
+  const lambdaFinal = -Math.SQRT2 * dBody;
+  const lambdaCur = lambdaFinal * slideAlpha;
+  const shift = { x: lambdaCur * s.x, y: lambdaCur * s.y };
+
+  const V1 = { x: V1_0.x + shift.x, y: V1_0.y + shift.y };
+  const V2 = { x: V2_0.x + shift.x, y: V2_0.y + shift.y };
+  const V3 = { x: V3_0.x + shift.x, y: V3_0.y + shift.y };
+
+  const railLen = H * invSqrt2;
+  const tMin = Math.min(0, lambdaFinal) - 18;
+  const tMax = Math.max(0, lambdaFinal) + railLen + 18;
+  const Lc = Math.min(Math.max(tMax - tMin, 115), availH * 0.62, canvasW * 0.30);
+
+  const C1 = { x: V1_0.x + tMin * s.x, y: V1_0.y + tMin * s.y };
+  const C2 = { x: C1.x + Lc * s.x, y: C1.y + Lc * s.y };
+  let hCart = (Math.sqrt(3) / 4) * Lc;
+  if (nOut.y < -0.05) {
+    const basePeakY = C1.y + 0.25 * Lc * s.y;
+    const maxHCart = (topPad - 4 - basePeakY) / nOut.y;
+    if (maxHCart > 24) hCart = Math.min(hCart, maxHCart);
+  }
+  const C3 = {
+    x: C1.x + 0.25 * Lc * s.x + hCart * nOut.x,
+    y: C1.y + 0.25 * Lc * s.y + hCart * nOut.y
+  };
+
+  ctx.save();
+  /* 1) CARTABÓN FIJO (30-60-90) — verde esmeralda */
+  ctx.fillStyle = 'rgba(0, 160, 131, 0.14)';
+  ctx.strokeStyle = colors.secondary;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(C1.x, C1.y);
+  ctx.lineTo(C2.x, C2.y);
+  ctx.lineTo(C3.x, C3.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  const cCent = { x: (C1.x + C2.x + C3.x) / 3, y: (C1.y + C2.y + C3.y) / 3 };
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+  ctx.beginPath();
+  [C1, C2, C3].forEach((pt, idx) => {
+    const ix = cCent.x + (pt.x - cCent.x) * 0.48;
+    const iy = cCent.y + (pt.y - cCent.y) * 0.48;
+    if (idx === 0) ctx.moveTo(ix, iy); else ctx.lineTo(ix, iy);
+  });
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = colors.secondaryDark;
+  ctx.font = 'bold 10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Cartabón (fijo)', cCent.x - 32, cCent.y + 3);
+
+  /* 2) ESCUADRA DESLIZANTE (45-45-90) — azul turquesa */
+  ctx.fillStyle = 'rgba(0, 164, 183, 0.15)';
+  ctx.strokeStyle = colors.primary;
+  ctx.lineWidth = 1.9;
+  ctx.beginPath();
+  ctx.moveTo(V1.x, V1.y);
+  ctx.lineTo(V2.x, V2.y);
+  ctx.lineTo(V3.x, V3.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  const eCent = { x: (V1.x + V2.x + V3.x) / 3, y: (V1.y + V2.y + V3.y) / 3 };
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+  ctx.beginPath();
+  [V1, V2, V3].forEach((pt, idx) => {
+    const ix = eCent.x + (pt.x - eCent.x) * 0.46;
+    const iy = eCent.y + (pt.y - eCent.y) * 0.46;
+    if (idx === 0) ctx.moveTo(ix, iy); else ctx.lineTo(ix, iy);
+  });
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  /* Línea de contacto continuo resaltada en verde lima */
+  ctx.strokeStyle = colors.accent;
+  ctx.lineWidth = 3.2;
+  ctx.beginPath();
+  ctx.moveTo(V1.x, V1.y);
+  ctx.lineTo(V3.x, V3.y);
+  ctx.stroke();
+
+  ctx.strokeStyle = colors.primary;
+  ctx.lineWidth = 1;
+  const ticks = 9;
+  for (let i = 1; i < ticks; i++) {
+    const f = i / ticks;
+    const tx = V1.x + (V2.x - V1.x) * f;
+    const ty = V1.y + (V2.y - V1.y) * f;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(tx - nBody.x * 5, ty - nBody.y * 5);
+    ctx.stroke();
+  }
+  ctx.fillStyle = colors.primaryDark;
+  ctx.font = 'bold 10px sans-serif';
+  ctx.fillText('Escuadra', eCent.x - 22, eCent.y + 3);
+  ctx.restore();
+}
+
+function drawRightAngleSquare(ctx, vertex, dirBase, dirLeg, size, colors) {
+  ctx.save();
+  const P0 = vertex;
+  const P1 = { x: P0.x + dirBase.x * size, y: P0.y + dirBase.y * size };
+  const P2 = { x: P0.x + dirLeg.x * size, y: P0.y + dirLeg.y * size };
+  ctx.fillStyle = 'rgba(0, 164, 183, 0.14)';
+  ctx.strokeStyle = colors.primary;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(P0.x, P0.y);
+  ctx.lineTo(P1.x, P1.y);
+  ctx.lineTo(P2.x, P2.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  const s = Math.min(11, size * 0.35);
+  ctx.strokeStyle = colors.accentDark;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(P0.x + dirBase.x * s, P0.y + dirBase.y * s);
+  ctx.lineTo(P0.x + (dirBase.x + dirLeg.x) * s, P0.y + (dirBase.y + dirLeg.y) * s);
+  ctx.lineTo(P0.x + dirLeg.x * s, P0.y + dirLeg.y * s);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/* ==========================================================================
+   RECTA REAL CON ENCUADRE ADAPTATIVO
+   ========================================================================== */
+function drawNumberLineFitted(ctx, w, h, viewport, colors, extraTicks = []) {
+  const { originX, unitPx, yAxis, topPad } = viewport;
+  const padL = 36;
+  const padR = 36;
+  const visMinX = Math.ceil((padL - 12 - originX) / unitPx);
+  const visMaxX = Math.floor((w - padR + 12 - originX) / unitPx);
+
+  ctx.save();
+  ctx.strokeStyle = '#EDF2F2';
+  ctx.lineWidth = 1;
+  for (let i = visMinX; i <= visMaxX; i++) {
+    const gx = originX + i * unitPx;
+    ctx.beginPath();
+    ctx.moveTo(gx, topPad - 8);
+    ctx.lineTo(gx, h - 18);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = colors.dark;
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(padL - 18, yAxis);
+  ctx.lineTo(w - padR + 18, yAxis);
+  ctx.stroke();
+
+  ctx.fillStyle = colors.dark;
+  ctx.beginPath();
+  ctx.moveTo(w - padR + 24, yAxis);
+  ctx.lineTo(w - padR + 14, yAxis - 5);
+  ctx.lineTo(w - padR + 14, yAxis + 5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(padL - 24, yAxis);
+  ctx.lineTo(padL - 14, yAxis - 5);
+  ctx.lineTo(padL - 14, yAxis + 5);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.font = 'bold 12px "JetBrains Mono", Consolas, monospace';
+  ctx.textAlign = 'center';
+  for (let i = visMinX; i <= visMaxX; i++) {
+    const tx = originX + i * unitPx;
+    const isZero = i === 0;
+    ctx.strokeStyle = isZero ? colors.primary : colors.dark;
+    ctx.lineWidth = isZero ? 2.8 : 2;
+    ctx.beginPath();
+    ctx.moveTo(tx, yAxis - (isZero ? 9 : 6));
+    ctx.lineTo(tx, yAxis + (isZero ? 9 : 6));
+    ctx.stroke();
+    ctx.fillStyle = isZero ? colors.primary : colors.dark;
+    ctx.fillText(String(i), tx, yAxis + 21);
+  }
+
+  extraTicks.forEach(t => {
+    const tx = originX + t.val * unitPx;
+    ctx.strokeStyle = t.color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(tx, yAxis - 10);
+    ctx.lineTo(tx, yAxis + 10);
+    ctx.stroke();
+    ctx.fillStyle = t.color;
+    ctx.beginPath();
+    ctx.arc(tx, yAxis, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText(t.label, tx, yAxis - 15);
+  });
+  ctx.restore();
+  return { originX, unitPx, yAxis };
+}
+
+/* ==========================================================================
+   TEOREMA DE TALES (PROPIAS, IMPROPIAS, NEGATIVAS Y TALLER)
+   ========================================================================== */
+function renderThalesScene(ctx, w, h, cfg, progress, colors) {
+  const g = gcd(cfg.p, cfg.q);
+  const p = cfg.p / g;
+  const q = cfg.q / g;
+  const sign = cfg.sign;
+  const c = Math.floor(p / q);
+  const r = p % q;
+  const exactVal = sign * (p / q);
+  const startInt = sign > 0 ? c : -c;
+  const endInt = sign > 0 ? c + 1 : -(c + 1);
+  const partsToTake = r === 0 ? q : r;
+
+  const minX = Math.min(-0.4, endInt - 0.45, startInt - 0.45);
+  const maxX = Math.max(0.4, endInt + 0.45, startInt + 0.45);
+
+  const topPad = 48;
+  const bottomPad = 36;
+  const padL = 44;
+  const padR = 44;
+  const availW = Math.max(160, w - padL - padR);
+  const availH = Math.max(180, h - topPad - bottomPad);
+  const xSpan = Math.max(1.6, maxX - minX);
+  const unitPxX = availW / xSpan;
+  const maxUnitForTools = Math.min(availH * 0.56, w * 0.36);
+  const unitPx = Math.max(24, Math.min(unitPxX, maxUnitForTools));
+  const contentW = xSpan * unitPx;
+  const originX = padL + (availW - contentW) / 2 - minX * unitPx;
+  const yAxis = topPad + availH * 0.72;
+
+  const tf = drawNumberLineFitted(ctx, w, h, { originX, unitPx, yAxis, topPad, bottomPad }, colors, []);
+  lastAxisTransform = tf;
+
+  const O = { x: tf.originX + startInt * tf.unitPx, y: tf.yAxis };
+  const E = { x: tf.originX + endInt * tf.unitPx, y: tf.yAxis };
+  const P = { x: tf.originX + exactVal * tf.unitPx, y: tf.yAxis };
+
+  if (r === 0) {
+    ctx.save();
+    ctx.fillStyle = colors.accentDark;
+    ctx.beginPath();
+    ctx.arc(P.x, P.y, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 13px "JetBrains Mono", Consolas, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${cfg.labelStr} = ${exactVal}`, P.x, P.y - 16);
+    ctx.restore();
+    updateHud(3, `Fracción entera: ${cfg.labelStr} = ${exactVal}`);
+    return;
+  }
+
+  const angle = sign > 0 ? -Math.PI * 0.24 : -Math.PI * 0.76;
+  const maxRayLen = Math.min(availH * 0.54, Math.max(tf.unitPx * 0.95, availH * 0.42), w * 0.34);
+  const stepLen = maxRayLen / (q + 0.45);
+  const rayDir = { x: Math.cos(angle), y: Math.sin(angle) };
+
+  const marks = [];
+  for (let k = 1; k <= q; k++) {
+    marks.push({ x: O.x + rayDir.x * stepLen * k, y: O.y + rayDir.y * stepLen * k });
+  }
+  const Mq = marks[q - 1];
+  const Mp = marks[partsToTake - 1];
+
+  ctx.save();
+  const p1 = Math.min(1, progress / 0.22);
+  const rayEnd = {
+    x: O.x + rayDir.x * (stepLen * (q + 0.45)) * p1,
+    y: O.y + rayDir.y * (stepLen * (q + 0.45)) * p1
+  };
+  ctx.strokeStyle = colors.primary;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  ctx.moveTo(O.x, O.y);
+  ctx.lineTo(rayEnd.x, rayEnd.y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = colors.primary;
+  ctx.beginPath();
+  ctx.arc(O.x, O.y, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  const p2 = Math.max(0, Math.min(1, (progress - 0.22) / 0.30));
+  const exactStepFloat = p2 * q;
+  const completedMarks = Math.floor(exactStepFloat);
+  const fracStep = exactStepFloat - completedMarks;
+
+  ctx.textAlign = 'left';
+  for (let k = 0; k < completedMarks; k++) {
+    const m = marks[k];
+    ctx.strokeStyle = colors.secondary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, 3.6, 0, Math.PI * 2);
+    ctx.stroke();
+    if (q <= 9 || k === 0 || k === q - 1 || k === partsToTake - 1 || (k + 1) % 2 === 1) {
+      ctx.fillStyle = colors.secondaryDark;
+      ctx.font = '10.5px "JetBrains Mono", Consolas, monospace';
+      ctx.fillText(`M${k + 1}`, m.x + (sign > 0 ? -16 : 12), m.y - 4);
+    }
+  }
+
+  if (state.showTools && progress >= 0.20 && progress < 0.54) {
+    const curIdx = Math.min(q - 1, completedMarks);
+    const piv = curIdx === 0 ? O : marks[curIdx - 1];
+    const trg = marks[curIdx];
+    const sweep = Math.min(1, fracStep * 1.25);
+    const curTip = {
+      x: piv.x + (trg.x - piv.x) * (0.65 + 0.35 * sweep),
+      y: piv.y + (trg.y - piv.y) * (0.65 + 0.35 * sweep) - Math.sin(sweep * Math.PI) * 10
+    };
+    drawCompass(ctx, piv, curTip, 52, colors, topPad - 6);
+  }
+
+  const p3 = Math.max(0, Math.min(1, (progress - 0.52) / 0.16));
+  if (p3 > 0) {
+    ctx.strokeStyle = colors.secondary;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(Mq.x, Mq.y);
+    ctx.lineTo(Mq.x + (E.x - Mq.x) * p3, Mq.y + (E.y - Mq.y) * p3);
+    ctx.stroke();
+  }
+
+  const p4 = Math.max(0, Math.min(1, (progress - 0.68) / 0.32));
+  const slideAlpha = Math.min(1, p4 / 0.62);
+  const drawParAlpha = Math.max(0, Math.min(1, (p4 - 0.62) / 0.38));
+
+  if (state.showTools && progress >= 0.64) {
+    drawThalesSetSquares(ctx, Mq, E, Mp, slideAlpha, colors, w, h, topPad);
+  }
+
+  if (drawParAlpha > 0) {
+    const curP = {
+      x: Mp.x + (P.x - Mp.x) * drawParAlpha,
+      y: Mp.y + (P.y - Mp.y) * drawParAlpha
+    };
+    ctx.strokeStyle = colors.accentDark;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(Mp.x, Mp.y);
+    ctx.lineTo(curP.x, curP.y);
+    ctx.stroke();
+  }
+
+  if (progress >= 0.96) {
+    ctx.fillStyle = colors.accent;
+    ctx.beginPath();
+    ctx.arc(P.x, P.y, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    const tagText = cfg.labelStr;
+    ctx.font = 'bold 12px "JetBrains Mono", Consolas, monospace';
+    const tw = ctx.measureText(tagText).width + 14;
+    ctx.fillStyle = colors.accentDark;
+    drawRoundedRect(ctx, P.x - tw / 2, P.y - 34, tw, 22, 6);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.fillText(tagText, P.x, P.y - 19);
+  }
+  ctx.restore();
+
+  let stepIdx = 0;
+  let hudMsg = `Paso 1/4: Semirrecta auxiliar desde ${startInt}`;
+  if (progress >= 0.22 && progress < 0.52) {
+    stepIdx = 1;
+    hudMsg = `Paso 2/4: Compás marcando ${q} divisiones iguales`;
+  } else if (progress >= 0.52 && progress < 0.68) {
+    stepIdx = 2;
+    hudMsg = `Paso 3/4: Uniendo M${q} con ${endInt}`;
+  } else if (progress >= 0.68) {
+    stepIdx = 3;
+    hudMsg = `Paso 4/4: Escuadra deslizando sobre cartabón hasta M${partsToTake} → ${cfg.labelStr}`;
+  }
+  updateHud(stepIdx, hudMsg, [
+    { color: colors.secondary, label: `Guía M${q}→${endInt}` },
+    { color: colors.accent, label: `Paralela M${partsToTake}→${cfg.labelStr}` }
+  ]);
+}
+
+/* ==========================================================================
+   TEOREMA DE PITÁGORAS — TRIÁNGULOS APOYADOS SOBRE LA RECTA REAL
+   Cada hipotenusa se abate con el compás sobre la recta y el triángulo
+   siguiente parte de nuevo de la recta usando ese segmento como base.
+   ========================================================================== */
+function renderPythagorasScene(ctx, w, h, cfg, progress, colors) {
+  const sign = cfg.sign;
+  const n = cfg.n;
+  const exactVal = sign * Math.sqrt(n);
+  /* Los pasos vienen dados por la lección o por el modo elegido en el taller */
+  const steps = cfg.steps || [];
+  const sol = { exactInt: isPerfectSquare(n) ? Math.round(Math.sqrt(n)) : null, steps: steps };
+
+  const topPad = 48;
+  const bottomPad = 36;
+  const padL = 44;
+  const padR = 44;
+  const availW = Math.max(160, w - padL - padR);
+  const availH = Math.max(180, h - topPad - bottomPad);
+
+  /* --- Geometría matemática: todos los triángulos tienen un vértice en 0
+         y su base sobre la recta real --- */
+  const tris = sol.steps.map(st => ({
+    st,
+    baseLen: Math.sqrt(st.baseVal),
+    leg: st.leg,
+    hypLen: Math.sqrt(st.hypVal)
+  }));
+
+  let maxAbsX = Math.max(1, Math.sqrt(n));
+  let maxLeg = 1;
+  tris.forEach(t => {
+    maxAbsX = Math.max(maxAbsX, t.baseLen, t.hypLen);
+    maxLeg = Math.max(maxLeg, t.leg);
+  });
+
+  const xLeft = sign > 0 ? -0.55 : -(maxAbsX + 0.55);
+  const xRight = sign > 0 ? maxAbsX + 0.55 : 0.55;
+
+  const yUp = sol.exactInt !== null ? 0.8 : maxLeg + 0.9;
+  const yDown = 0.42;
+
+  const unitPxX = availW / Math.max(1.2, xRight - xLeft);
+  const unitPxY = availH / (yUp + yDown);
+  const unitPx = Math.max(20, Math.min(unitPxX, unitPxY));
+  const contentW = (xRight - xLeft) * unitPx;
+  const contentH = (yUp + yDown) * unitPx;
+  const originX = padL + (availW - contentW) / 2 - xLeft * unitPx;
+  const yAxis = topPad + (availH - contentH) / 2 + yUp * unitPx;
+
+  const tf = drawNumberLineFitted(ctx, w, h, { originX, unitPx, yAxis, topPad, bottomPad }, colors, []);
+  lastAxisTransform = tf;
+
+  const O = { x: tf.originX, y: tf.yAxis };
+  const P = { x: tf.originX + exactVal * tf.unitPx, y: tf.yAxis };
+
+  /* Caso cuadrado perfecto */
+  if (sol.exactInt !== null) {
+    ctx.save();
+    ctx.fillStyle = colors.secondary;
+    ctx.beginPath();
+    ctx.arc(P.x, P.y, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 13px "JetBrains Mono", Consolas, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = colors.secondaryDark;
+    ctx.fillText(`${sign < 0 ? '-' : ''}√${n} = ${exactVal}`, P.x, P.y - 16);
+    ctx.restore();
+    updateHud(3, `Cuadrado perfecto: ${sign < 0 ? '-' : ''}√${n} = ${exactVal}`);
+    return;
+  }
+
+  const numSteps = tris.length;
+  const triColors = [colors.primary, colors.secondary, colors.accentDark, colors.dark];
+
+  const geo = tris.map((t, i) => {
+    const B = { x: O.x + sign * t.baseLen * tf.unitPx, y: O.y };
+    const C = { x: B.x, y: O.y - t.leg * tf.unitPx };
+    const D = { x: O.x + sign * t.hypLen * tf.unitPx, y: O.y };
+    return { ...t, A: O, B, C, D, color: triColors[i % triColors.length] };
+  });
+
+  ctx.save();
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  const segLen = 1 / numSteps;
+  let hudStep = 0;
+  let hudMsg = '';
+
+  for (let i = 0; i < numSteps; i++) {
+    const tStart = i * segLen;
+    const localP = Math.max(0, Math.min(1, (progress - tStart) / segLen));
+    if (localP <= 0) continue;
+    const tr = geo[i];
+
+    /* Sub-fases dentro de cada triángulo */
+    const pBase = Math.min(1, localP / 0.22);
+    const pLeg = Math.max(0, Math.min(1, (localP - 0.22) / 0.26));
+    const pHyp = Math.max(0, Math.min(1, (localP - 0.48) / 0.24));
+    const pArc = Math.max(0, Math.min(1, (localP - 0.72) / 0.28));
+
+    /* Relleno del triángulo */
+    if (pHyp > 0.15) {
+      ctx.fillStyle = tr.color + '20';
+      ctx.beginPath();
+      ctx.moveTo(tr.A.x, tr.A.y);
+      ctx.lineTo(tr.B.x, tr.B.y);
+      ctx.lineTo(tr.C.x, tr.C.y);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    /* 1) BASE sobre la recta real */
+    ctx.strokeStyle = tr.color;
+    ctx.lineWidth = 3.4;
+    ctx.beginPath();
+    ctx.moveTo(tr.A.x, tr.A.y);
+    ctx.lineTo(tr.A.x + (tr.B.x - tr.A.x) * pBase, tr.A.y);
+    ctx.stroke();
+    if (pBase > 0.55) {
+      ctx.fillStyle = tr.color;
+      ctx.font = 'bold 11.5px "JetBrains Mono", Consolas, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`a = ${tr.st.baseLabel}`, (tr.A.x + tr.B.x) / 2, tr.A.y + 36);
+    }
+
+    /* 2) CATETO PERPENDICULAR desde la recta (escuadra 90°) */
+    if (pLeg > 0) {
+      const curC = { x: tr.B.x, y: tr.B.y + (tr.C.y - tr.B.y) * pLeg };
+      const dBase = { x: (tr.A.x - tr.B.x) >= 0 ? 1 : -1, y: 0 };
+      const dLeg = { x: 0, y: -1 };
+      if (state.showTools && localP >= 0.22 && localP <= 0.56) {
+        drawRightAngleSquare(ctx, tr.B, dBase, dLeg, Math.min(44, tf.unitPx * 0.5), colors);
+      } else {
+        const sq = Math.min(10, tf.unitPx * 0.22);
+        ctx.strokeStyle = tr.color;
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(tr.B.x + dBase.x * sq, tr.B.y);
+        ctx.lineTo(tr.B.x + dBase.x * sq, tr.B.y - sq);
+        ctx.lineTo(tr.B.x, tr.B.y - sq);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = tr.color;
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.moveTo(tr.B.x, tr.B.y);
+      ctx.lineTo(curC.x, curC.y);
+      ctx.stroke();
+      if (pLeg > 0.7) {
+        ctx.fillStyle = tr.color;
+        ctx.font = 'bold 11px "JetBrains Mono", Consolas, monospace';
+        ctx.textAlign = sign > 0 ? 'left' : 'right';
+        ctx.fillText(`b = ${tr.st.leg}`, tr.B.x + (sign > 0 ? 8 : -8), (tr.B.y + tr.C.y) / 2);
+      }
+    }
+
+    /* 3) HIPOTENUSA */
+    if (pHyp > 0) {
+      const curH = {
+        x: tr.A.x + (tr.C.x - tr.A.x) * pHyp,
+        y: tr.A.y + (tr.C.y - tr.A.y) * pHyp
+      };
+      ctx.strokeStyle = tr.color;
+      ctx.lineWidth = i === numSteps - 1 ? 3.4 : 2.6;
+      ctx.beginPath();
+      ctx.moveTo(tr.A.x, tr.A.y);
+      ctx.lineTo(curH.x, curH.y);
+      ctx.stroke();
+      if (pHyp > 0.75) {
+        const mx = (tr.A.x + tr.C.x) / 2;
+        const my = (tr.A.y + tr.C.y) / 2;
+        ctx.fillStyle = tr.color;
+        ctx.font = 'bold 12px "JetBrains Mono", Consolas, monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`√${tr.st.hypVal}`, mx + (sign > 0 ? -14 : 14), my - 8);
+      }
+    }
+
+    /* 4) ABATIMIENTO CON COMPÁS SOBRE LA RECTA */
+    if (pArc > 0) {
+      const radiusPx = Math.hypot(tr.C.x - O.x, tr.C.y - O.y);
+      const startAng = Math.atan2(tr.C.y - O.y, tr.C.x - O.x);
+      const endAng = sign > 0 ? 0 : Math.PI;
+      let delta = endAng - startAng;
+      while (delta > Math.PI) delta -= 2 * Math.PI;
+      while (delta < -Math.PI) delta += 2 * Math.PI;
+      const curAng = startAng + delta * pArc;
+
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 2.2;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.arc(O.x, O.y, radiusPx, startAng, curAng, delta < 0);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const tipPt = { x: O.x + Math.cos(curAng) * radiusPx, y: O.y + Math.sin(curAng) * radiusPx };
+      if (state.showTools) {
+        drawCompass(ctx, O, tipPt, Math.min(82, availH * 0.24), colors, topPad - 6);
+      }
+
+      /* Punto abatido en la recta: base del triángulo siguiente */
+      if (pArc > 0.92) {
+        const isFinal = (i === numSteps - 1);
+        ctx.fillStyle = isFinal ? colors.accent : tr.color;
+        ctx.beginPath();
+        ctx.arc(tr.D.x, tr.D.y, isFinal ? 6.5 : 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        if (!isFinal) {
+          ctx.fillStyle = tr.color;
+          ctx.font = 'bold 11px "JetBrains Mono", Consolas, monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(`√${tr.st.hypVal}`, tr.D.x, tr.D.y + 34);
+          /* Marca de que este segmento será la base siguiente */
+          ctx.strokeStyle = tr.color;
+          ctx.lineWidth = 1.4;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(tr.D.x, tr.D.y - 12);
+          ctx.lineTo(tr.D.x, tr.D.y + 12);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+    }
+
+    /* HUD: paso actual */
+    if (localP < 1 || i === numSteps - 1) {
+      const etiqueta = numSteps > 1 ? `Δ${i + 1}/${numSteps} · ` : '';
+      if (pArc > 0) {
+        hudStep = 3;
+        hudMsg = `${etiqueta}Paso 4/4: Compás abatiendo √${tr.st.hypVal} sobre la recta real`;
+      } else if (pHyp > 0) {
+        hudStep = 2;
+        hudMsg = `${etiqueta}Paso 3/4: Hipotenusa de longitud exacta √${tr.st.hypVal}`;
+      } else if (pLeg > 0) {
+        hudStep = 1;
+        hudMsg = `${etiqueta}Paso 2/4: Cateto perpendicular b = ${tr.st.leg} con la escuadra (90°)`;
+      } else {
+        hudStep = 0;
+        hudMsg = `${etiqueta}Paso 1/4: Base a = ${tr.st.baseLabel} apoyada sobre la recta`;
+      }
+    }
+  }
+
+  /* Etiqueta final del resultado */
+  if (progress >= 0.985) {
+    ctx.fillStyle = colors.accent;
+    ctx.beginPath();
+    ctx.arc(P.x, P.y, 6.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    const tagText = `${sign < 0 ? '-' : ''}√${n}`;
+    ctx.font = 'bold 12px "JetBrains Mono", Consolas, monospace';
+    const tw = ctx.measureText(tagText).width + 14;
+    ctx.fillStyle = colors.accentDark;
+    drawRoundedRect(ctx, P.x - tw / 2, P.y - 34, tw, 22, 6);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.fillText(tagText, P.x, P.y - 19);
+    hudStep = 3;
+    hudMsg = `Resultado: ${sign < 0 ? '-' : ''}√${n} ≈ ${exactVal.toFixed(3)} situado exactamente en la recta`;
+  }
+  ctx.restore();
+
+  const legendItems = geo.map((t, idx) => ({ color: t.color, label: `Δ${idx + 1}: √${t.st.hypVal}` }));
+  legendItems.push({ color: colors.accent, label: 'Arco compás' });
+  updateHud(hudStep, hudMsg, legendItems);
+}
+
+function updateHud(activeStep, msg, legend = []) {
+  const hud = document.getElementById('hudStatus');
+  if (hud) hud.textContent = msg;
+  const leg = document.getElementById('hudLegend');
+  if (leg) {
+    leg.innerHTML = legend.map(it =>
+      `<span class="legend-item"><span class="legend-swatch" style="background:${it.color}"></span>${it.label}</span>`
+    ).join('');
+  }
+  document.querySelectorAll('#stepsList .step-item').forEach((el, idx) => {
+    el.classList.toggle('active', idx === activeStep);
+    el.classList.toggle('done', idx < activeStep);
+  });
+}
+
+/* ==========================================================================
+   VISTA PREVIA DUAL EN LA PORTADA
+   ========================================================================== */
+function renderHeroPreview(ts) {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas || state.view !== 'home') return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr;
+  const h = canvas.height / dpr;
+  const colors = getThemeColors();
+
+  ctx.save();
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const cycle = ((ts % 6000) / 6000);
+  const halfW = w / 2;
+
+  ctx.strokeStyle = colors.border;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(halfW, 10);
+  ctx.lineTo(halfW, h - 10);
+  ctx.stroke();
+
+  /* --- Izquierda: Tales 3/5 --- */
+  ctx.fillStyle = colors.primaryDark;
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Teorema de Tales: 3/5', 12, 18);
+
+  const y1 = h * 0.78;
+  const x0 = 26, x1 = halfW - 26;
+  ctx.strokeStyle = colors.dark;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(x0 - 8, y1);
+  ctx.lineTo(x1 + 8, y1);
+  ctx.stroke();
+
+  [0, 1].forEach((val, idx) => {
+    const px = idx === 0 ? x0 : x1;
+    ctx.beginPath();
+    ctx.moveTo(px, y1 - 4);
+    ctx.lineTo(px, y1 + 4);
+    ctx.stroke();
+    ctx.fillStyle = colors.dark;
+    ctx.font = 'bold 10px monospace';
+    ctx.fillText(String(val), px - 3, y1 + 15);
+  });
+
+  const rayDx = (x1 - x0) * 0.72;
+  const rayDy = -(h * 0.48);
+  ctx.strokeStyle = colors.primary;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(x0, y1);
+  ctx.lineTo(x0 + rayDx, y1 + rayDy);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  for (let k = 1; k <= 5; k++) {
+    const f = k / 5;
+    const mx = x0 + rayDx * f;
+    const my = y1 + rayDy * f;
+    ctx.fillStyle = colors.secondary;
+    ctx.beginPath();
+    ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = colors.secondary;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(x0 + rayDx, y1 + rayDy);
+  ctx.lineTo(x1, y1);
+  ctx.stroke();
+
+  const pAnim = Math.min(1, cycle * 1.4);
+  const m3x = x0 + rayDx * 0.6;
+  const m3y = y1 + rayDy * 0.6;
+  const t3x = x0 + (x1 - x0) * 0.6;
+  ctx.strokeStyle = colors.accent;
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(m3x, m3y);
+  ctx.lineTo(m3x + (t3x - m3x) * pAnim, m3y + (y1 - m3y) * pAnim);
+  ctx.stroke();
+  if (pAnim > 0.9) {
+    ctx.fillStyle = colors.accentDark;
+    ctx.beginPath();
+    ctx.arc(t3x, y1, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 10px monospace';
+    ctx.fillText('3/5', t3x - 8, y1 - 8);
+  }
+
+  /* --- Derecha: Pitágoras √2 → √3 apoyado en la recta --- */
+  ctx.fillStyle = colors.secondaryDark;
+  ctx.font = 'bold 11px sans-serif';
+  ctx.fillText('Pitágoras encadenado: √2 → √3', halfW + 12, 18);
+
+  const rx0 = halfW + 26;
+  const uPx = (halfW - 60) / 2.2;
+  const ry = h * 0.78;
+
+  ctx.strokeStyle = colors.dark;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(rx0 - 8, ry);
+  ctx.lineTo(w - 10, ry);
+  ctx.stroke();
+  for (let i = 0; i <= 2; i++) {
+    const px = rx0 + i * uPx;
+    ctx.beginPath();
+    ctx.moveTo(px, ry - 4);
+    ctx.lineTo(px, ry + 4);
+    ctx.stroke();
+    ctx.fillStyle = colors.dark;
+    ctx.font = 'bold 10px monospace';
+    ctx.fillText(String(i), px - 3, ry + 15);
+  }
+
+  /* Triángulo 1: catetos 1 y 1 → √2 */
+  const b1 = rx0 + uPx;
+  const c1y = ry - uPx;
+  ctx.fillStyle = 'rgba(0, 164, 183, 0.14)';
+  ctx.beginPath();
+  ctx.moveTo(rx0, ry);
+  ctx.lineTo(b1, ry);
+  ctx.lineTo(b1, c1y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = colors.primary;
+  ctx.lineWidth = 1.8;
+  ctx.stroke();
+
+  const r2 = Math.SQRT2 * uPx;
+  const a1 = Math.atan2(c1y - ry, b1 - rx0);
+  ctx.strokeStyle = colors.accent;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.arc(rx0, ry, r2, a1, a1 * (1 - Math.min(1, cycle * 2)), false);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* Triángulo 2 (desde la recta, base √2) → √3 */
+  const pChain = Math.max(0, Math.min(1, (cycle - 0.5) * 2.4));
+  if (pChain > 0) {
+    const b2 = rx0 + r2;
+    const c2y = ry - uPx * pChain;
+    ctx.fillStyle = 'rgba(0, 160, 131, 0.16)';
+    ctx.beginPath();
+    ctx.moveTo(rx0, ry);
+    ctx.lineTo(b2, ry);
+    ctx.lineTo(b2, c2y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = colors.secondary;
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    if (pChain > 0.95) {
+      const r3 = Math.sqrt(3) * uPx;
+      ctx.fillStyle = colors.accentDark;
+      ctx.beginPath();
+      ctx.arc(rx0 + r3, ry, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = 'bold 10px monospace';
+      ctx.fillText('√3', rx0 + r3 - 6, ry - 8);
+    }
+  }
+  ctx.restore();
+}
+
+/* ==========================================================================
+   BUCLE PRINCIPAL Y REDIMENSIONADO
+   ========================================================================== */
+function resizeHeroCanvas() {
+  const c = document.getElementById('heroCanvas');
+  if (!c) return;
+  const rect = c.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  c.width = Math.max(100, rect.width) * dpr;
+  c.height = Math.max(80, rect.height) * dpr;
+}
+function resizeMainCanvas() {
+  const c = document.getElementById('mainCanvas');
+  if (!c) return;
+  const rect = c.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  c.width = Math.max(200, rect.width) * dpr;
+  c.height = Math.max(200, rect.height) * dpr;
+}
+window.addEventListener('resize', () => {
+  if (state.view === 'home') resizeHeroCanvas();
+  else resizeMainCanvas();
+});
+
+function tick(ts) {
+  if (state.lastTs === null) state.lastTs = ts;
+  const dt = ts - state.lastTs;
+  state.lastTs = ts;
+
+  if (state.view === 'home') {
+    renderHeroPreview(ts);
+  } else {
+    if (state.playing) {
+      state.progress += (dt * state.speed) / state.durationMs;
+      if (state.progress >= 1) {
+        state.progress = 1;
+        state.playing = false;
+        updatePlayBtn();
+      }
+    }
+    const slider = document.getElementById('progressSlider');
+    const pct = document.getElementById('pctLabel');
+    if (slider) slider.value = Math.round(state.progress * 1000);
+    if (pct) pct.textContent = `${Math.round(state.progress * 100)}%`;
+    renderMainScene();
+  }
+  requestAnimationFrame(tick);
+}
+
+function renderMainScene() {
+  const canvas = document.getElementById('mainCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr;
+  const h = canvas.height / dpr;
+  const colors = getThemeColors();
+
+  ctx.save();
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const v = state.view;
+
+  if (v === 'proper') {
+    const [p, q] = currentExample(v);
+    renderThalesScene(ctx, w, h, { sign: 1, p, q, labelStr: `${p}/${q}` }, state.progress, colors);
+
+  } else if (v === 'improper') {
+    const [p, q] = currentExample(v);
+    const c = Math.floor(p / q), r = p % q;
+    renderThalesScene(ctx, w, h, { sign: 1, p, q, labelStr: `${c}+${r}/${q}` }, state.progress, colors);
+
+  } else if (v === 'rootsDirect') {
+    const n = currentExample(v);
+    renderPythagorasScene(ctx, w, h,
+      { sign: 1, n, steps: solveDirect(n) || solveAny(n) }, state.progress, colors);
+
+  } else if (v === 'rootsChain') {
+    const n = currentExample(v);
+    renderPythagorasScene(ctx, w, h,
+      { sign: 1, n, steps: solveChain(n) || solveAny(n) }, state.progress, colors);
+
+  } else if (v === 'negatives') {
+    const pr = currentExample(v);
+    if (pr === 'prop') {
+      renderThalesScene(ctx, w, h, { sign: -1, p: 3, q: 5, labelStr: '-3/5' }, state.progress, colors);
+    } else if (pr === 'imp') {
+      renderThalesScene(ctx, w, h, { sign: -1, p: 7, q: 4, labelStr: '-(1+3/4)' }, state.progress, colors);
+    } else if (pr === 'rdir') {
+      renderPythagorasScene(ctx, w, h, { sign: -1, n: 5, steps: solveDirect(5) }, state.progress, colors);
+    } else {
+      renderPythagorasScene(ctx, w, h, { sign: -1, n: 3, steps: solveChain(3) }, state.progress, colors);
+    }
+
+  } else if (v === 'workFrac') {
+    const wf = state.workFrac;
+    const g = gcd(wf.p, wf.q);
+    const sp = wf.p / g, sq = wf.q / g;
+    const lbl = `${wf.sign < 0 ? '-' : ''}${sp}/${sq}`;
+    renderThalesScene(ctx, w, h,
+      { sign: wf.sign, p: wf.p, q: wf.q, labelStr: lbl }, state.progress, colors);
+
+  } else if (v === 'workRoot') {
+    const wr = state.workRoot;
+    renderPythagorasScene(ctx, w, h,
+      { sign: wr.sign, n: wr.n, steps: stepsForMode(wr.n, wr.mode) }, state.progress, colors);
+  }
+  ctx.restore();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  resizeHeroCanvas();
+  requestAnimationFrame(tick);
+});
+</script>
+</body>
+</html>
