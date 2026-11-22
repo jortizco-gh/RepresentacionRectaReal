@@ -289,6 +289,10 @@
   .hidden { display: none !important; }
   @media (max-width: 900px) {
     html, body { overflow: auto; }
+    header.topbar { height: auto; min-height: 44px; flex-wrap: wrap; padding: 6px 10px; }
+    nav.nav-tabs { width: 100%; flex-wrap: wrap; overflow-x: visible; gap: 4px; }
+    main.app-body { height: auto; min-height: calc(100vh - 44px); }
+    .home-view { height: auto; }
     .workspace-view { grid-template-columns: 1fr; height: auto; }
     section.stage-area { height: 420px; }
     .cards-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto; }
@@ -313,14 +317,14 @@
       </div>
     </div>
     <nav class="nav-tabs" id="navTabs">
-      <button type="button" class="nav-btn active" data-view="home" onclick="switchView('home')">Portada</button>
-      <button type="button" class="nav-btn" data-view="proper" onclick="switchView('proper')">1. Propias</button>
-      <button type="button" class="nav-btn" data-view="improper" onclick="switchView('improper')">2. Impropias</button>
-      <button type="button" class="nav-btn" data-view="rootsDirect" onclick="switchView('rootsDirect')">3. Raíces directas</button>
-      <button type="button" class="nav-btn" data-view="rootsChain" onclick="switchView('rootsChain')">4. Raíces encadenadas</button>
-      <button type="button" class="nav-btn" data-view="negatives" onclick="switchView('negatives')">5. Negativos</button>
-      <button type="button" class="nav-btn workshop-btn" data-view="workFrac" onclick="switchView('workFrac')">Taller Fracciones</button>
-      <button type="button" class="nav-btn workshop-btn" data-view="workRoot" onclick="switchView('workRoot')">Taller Raíces</button>
+      <button type="button" class="nav-btn active" data-view="home">Portada</button>
+      <button type="button" class="nav-btn" data-view="proper">1. Propias</button>
+      <button type="button" class="nav-btn" data-view="improper">2. Impropias</button>
+      <button type="button" class="nav-btn" data-view="rootsDirect">3. Raíces directas</button>
+      <button type="button" class="nav-btn" data-view="rootsChain">4. Raíces encadenadas</button>
+      <button type="button" class="nav-btn" data-view="negatives">5. Negativos</button>
+      <button type="button" class="nav-btn workshop-btn" data-view="workFrac">Taller Fracciones</button>
+      <button type="button" class="nav-btn workshop-btn" data-view="workRoot">Taller Raíces</button>
     </nav>
   </header>
 
